@@ -42,6 +42,11 @@ trust_proxy_cas_in_nssdb() {
   for cert in "$work"/*.pem; do
     [ -f "$cert" ] || continue
     nick="ccr-$(basename "$cert" .pem)"
+    # A nickname collision makes -A fail outright (SEC_ERROR_ADDING_CERT) rather
+    # than replace, so when the proxy rotates its CA into the same filename the
+    # stale certificate would survive and the browser would start failing again
+    # with ERR_CERT_AUTHORITY_INVALID. Drop any existing entry first.
+    certutil -d "sql:$nssdb" -D -n "$nick" >/dev/null 2>&1 || true
     # -t C,, = trusted CA for TLS server auth only; not email, not code signing.
     certutil -d "sql:$nssdb" -A -t "C,," -n "$nick" -i "$cert" >/dev/null 2>&1 || true
   done
