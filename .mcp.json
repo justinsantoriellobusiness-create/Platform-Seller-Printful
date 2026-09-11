@@ -8,7 +8,9 @@
       "type": "stdio",
       "command": "bash",
       "args": [
-        "${CLAUDE_PROJECT_DIR}/.claude/mcp/chrome-mcp.sh"
+        "-c",
+        "exec bash \"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/mcp/chrome-mcp.sh\" \"$@\"",
+        "--"
       ],
       "env": {}
     },
@@ -16,7 +18,9 @@
       "type": "stdio",
       "command": "bash",
       "args": [
-        "${CLAUDE_PROJECT_DIR}/.claude/mcp/chrome-mcp.sh",
+        "-c",
+        "exec bash \"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/mcp/chrome-mcp.sh\" \"$@\"",
+        "--",
         "--browserUrl",
         "http://127.0.0.1:9222"
       ],
